@@ -321,3 +321,8 @@ nav h1 a {
   }
 
 }
+
+*:focus {
+  box-shadow: 2px 2px red;
+}
+

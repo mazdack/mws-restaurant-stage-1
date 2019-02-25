@@ -19,7 +19,8 @@ initMap = () => {
       self.newMap = L.map('map', {
         center: [restaurant.latlng.lat, restaurant.latlng.lng],
         zoom: 16,
-        scrollWheelZoom: false
+        scrollWheelZoom: false,
+        keyboard: false,
       });
       L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.jpg70?access_token={mapboxToken}', {
         mapboxToken: 'pk.eyJ1IjoibWF6ZGFjayIsImEiOiJjanJnOGJiNHIwMThnNGJvNGJuNnU5ZTVoIn0.GGCpQ_6VyTGDh5jP8BEX8Q',
@@ -125,6 +126,7 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
  * Create all reviews HTML and add them to the webpage.
  */
 fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+  var startTabIndex = 7;
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -138,7 +140,9 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   }
   const ul = document.getElementById('reviews-list');
   reviews.forEach(review => {
-    ul.appendChild(createReviewHTML(review));
+    let reviewElement = createReviewHTML(review);
+    reviewElement.tabIndex = startTabIndex++;
+    ul.appendChild(reviewElement);
   });
   container.appendChild(ul);
 };
