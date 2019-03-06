@@ -2,6 +2,15 @@ let restaurant;
 var newMap;
 
 /**
+ * init lazyload
+ */
+
+var lazyLoadInstance = new LazyLoad({
+  elements_selector: ".lazy"
+  // ... more custom settings?
+});
+
+/**
  * Initialize map as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {  
@@ -88,8 +97,13 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.classList.add('restaurant-img', 'lazy');
+  image.setAttribute('data-src', DBHelper.imageUrlForRestaurant(restaurant));
+  image.alt = "Image of " + restaurant.name;
+  
+  if (lazyLoadInstance) {
+    lazyLoadInstance.update();
+  }
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -177,6 +191,7 @@ createReviewHTML = (review) => {
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
+  li.setAttribute('aria-current', 'page');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 };
