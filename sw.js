@@ -1,4 +1,4 @@
-var cacheName = 'mws-restaurant-cache-v1';
+const cacheName = 'mws-restaurant-cache-v1';
 
 self.addEventListener('fetch', event => {
     event.respondWith(
