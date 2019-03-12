@@ -18,8 +18,37 @@ class DBHelper {
   static fetchRestaurants(callback) {
     fetch(DBHelper.DATABASE_URL)
         .then(response => response.json())
-        .then(restaurants => callback(null, restaurants))
-        .catch(error => callback(`Request failed. Returned status of ${error.message}`, null));
+        .then(restaurants => {
+          if (indexedDB) {
+            const objectStore = indexedDB.transaction(["restaurants"], "readwrite").objectStore("restaurants");
+
+            restaurants.forEach(restaurant => {
+              console.log('add restaurant to db', restaurant);
+              const request = objectStore.add(restaurant);
+              request.onsuccess = () => console.log(`restaurant ${restaurant.id} saved to DB`);
+            });
+          }
+          callback(null, restaurants)
+        })
+        .catch(error => {
+          if (indexedDB) {
+            console.log('returning restaurants from DB');
+            const objectStore = indexedDB.transaction(["restaurants"], "readwrite").objectStore("restaurants");
+            const request = objectStore.getAll();
+
+            request.onsuccess = event => {
+              callback(null, event.target.result);
+            };
+
+            request.onerror = () => {
+              callback(`Request failed. Returned status of ${error.message}`, null);
+            };
+
+            return;
+          }
+
+          callback(`Request failed. Returned status of ${error.message}`, null)
+        });
     //
     // let xhr = new XMLHttpRequest();
     // xhr.open('GET', DBHelper.DATABASE_URL);
