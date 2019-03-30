@@ -32,8 +32,12 @@ request.onupgradeneeded = function(event) {
     // Save the IDBDatabase interface
     const db = event.target.result;
 
-    // Create an objectStore for this database
-    const objectStore = db.createObjectStore("restaurants", { keyPath: "id" });
+    // Create a restaurants objectStore for this database
+    const restaurantsObjectStore = db.createObjectStore("restaurants", { keyPath: "id" });
+    restaurantsObjectStore.transaction.oncomplete = event => console.log('restaurants store created', event);
 
-    objectStore.transaction.oncomplete = event => console.log('store created', event);
+    // Create an reviews objectStore for this database
+    const reviewsObjectStore = db.createObjectStore("reviews", { keyPath: "id" });
+    reviewsObjectStore.transaction.oncomplete = event => console.log('reviews store created', event);
+    reviewsObjectStore.createIndex('byRestaurantId', 'restaurant_id', { unique: false });
 };

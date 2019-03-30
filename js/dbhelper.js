@@ -3,20 +3,24 @@
  */
 class DBHelper {
 
-  /**
-   * Database URL.
-   * Change this to restaurants.json file location on your server.
-   */
   static get DATABASE_URL() {
     const port = 1337; // Change this to your server port
-    return `http://localhost:${port}/restaurants`;
+    return `http://localhost:${port}`;
+  }
+
+  static get RESTAURANT_DATABASE_URL() {
+    return DBHelper.DATABASE_URL + '/restaurants';
+  }
+
+  static get REVIEWS_DATABASE_URL() {
+    return DBHelper.DATABASE_URL + '/reviews';
   }
 
   /**
    * Fetch all restaurants.
    */
   static fetchRestaurants(callback) {
-    fetch(DBHelper.DATABASE_URL)
+    fetch(DBHelper.RESTAURANT_DATABASE_URL)
         .then(response => response.json())
         .then(restaurants => {
           if (indexedDB) {
@@ -211,5 +215,59 @@ class DBHelper {
     return marker;
   } */
 
+  /**
+   * Fetch all restaurant reviews
+   */
+
+   static fetchReviews(callback) {
+    fetch(DBHelper.REVIEWS_DATABASE_URL)
+    .then(response => response.json())
+    .then(reviews => {
+      if (indexedDB) {
+        const objectStore = indexedDB.transaction(["reviews"], "readwrite").objectStore("reviews");
+
+        reviews.forEach(review => {
+          console.log('add review to db', review);
+          const request = objectStore.add(review);
+          request.onsuccess = () => console.log(`review ${review.id} saved to DB`);
+        });
+      }
+      callback(null, reviews)
+    })
+    .catch(error => {
+      if (indexedDB) {
+        console.log('returning reviews from DB');
+        const objectStore = indexedDB.transaction(["reviews"], "readwrite").objectStore("reviews");
+        const request = objectStore.getAll();
+
+        request.onsuccess = event => {
+          callback(null, event.target.result);
+        };
+
+        request.onerror = () => {
+          callback(`Request failed. Returned status of ${error.message}`, null);
+        };
+
+        return;
+      }
+
+      callback(`Request failed. Returned status of ${error.message}`, null)
+    });
+   }
+
+  static fetchReviewsByRestaurantId(restaurantId, callback) {
+    DBHelper.fetchReviews((error, reviews) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        const reviewsForRestaurant = reviews.filter(r => r.restaurant_id == restaurantId);
+        if (reviews) { // Got the restaurant
+          callback(null, reviewsForRestaurant);
+        } else { // Restaurant does not exist in the database
+          callback(`Reviews for restaurantId = ${restaurantId} not found`, null);
+        }
+      }
+    });
+  }
 }
 
