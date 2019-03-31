@@ -289,13 +289,40 @@ nav h1 a {
   list-style-type: none;
   margin: 0 0 30px;
   overflow: hidden;
-  padding: 0 20px 20px;
+  padding: 20px;
   position: relative;
   width: 85%;
 }
 #reviews-list li p {
   margin: 0 0 10px;
 }
+
+#reviews-container label {
+  display: block;
+  margin: 0 0 10px;
+}
+
+#reviews-container form {
+  background-color: #fff;
+  border: 2px solid #f3f3f3;
+  display: block;
+  list-style-type: none;
+  margin: 0 0 30px;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  width: 85%;
+}
+
+label input, select, textarea {
+  display: block;
+  margin-top: 5px;
+}
+
+label textarea {
+  width: 100%;
+}
+
 #restaurant-hours td {
   color: #666;
 }

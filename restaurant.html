@@ -46,6 +46,35 @@
     <!-- Beginning reviews -->
     <section id="reviews-container">
       <ul id="reviews-list" tabindex="5"></ul>
+      <form id="reviews-add-review-form">
+        <input type="hidden" name="restaurant_id" id='review-form-restaurant-id'/>
+        <label>
+          What is your name?
+          <input name="name" size="20" id="review-form-name"/>
+        </label>
+        <label>
+          Rate this restaurant
+          <select name="rating" id="review-form-rating">
+              <option value="">--Please choose a rating--</option>
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+          </select>
+        </label>
+        <label>
+          Write your review<br/>
+          <textarea name="comments" id="review-form-comments" rows="10"></textarea>
+        </label>
+        <input type="submit" value="Post review"/>
+      </form>
     </section>
     <!-- End reviews -->
   </main>
