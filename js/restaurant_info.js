@@ -182,19 +182,28 @@ const fillAddReviewForm = (restaurant = self.restaurant) => {
   const form = document.getElementById('reviews-add-review-form');
   document.getElementById('review-form-restaurant-id').setAttribute('value', restaurant.id);
   form.addEventListener('submit', (event) => {
-    const data = {
-      restaurant_id: document.getElementById('review-form-restaurant-id').value,
-      name: document.getElementById('review-form-name').value,
-      rating: document.getElementById('review-form-rating').value,
-      comments: document.getElementById('review-form-comments').value,
-    };
     event.preventDefault();
-    fetch(DBHelper.REVIEWS_DATABASE_URL, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    }).then(() => {
-      window.location.reload();
-    }).catch(error => console.error(error));
+    const sendReview = () => {
+      const data = {
+        restaurant_id: document.getElementById('review-form-restaurant-id').value,
+        name: document.getElementById('review-form-name').value,
+        rating: document.getElementById('review-form-rating').value,
+        comments: document.getElementById('review-form-comments').value,
+      };
+      fetch(DBHelper.REVIEWS_DATABASE_URL, {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }).then(() => {
+        window.location.reload();
+      }).catch((error) => {
+        console.log('Error while submitting review');
+        console.error(error);
+        console.log('Will try later');
+        setTimeout(sendReview, 500);
+      });
+    };
+
+    sendReview();
   });
   container.appendChild(form);
 

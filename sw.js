@@ -7,8 +7,6 @@ self.addEventListener('activate', event => event.waitUntil(
         console.log('Deleting out of date cache:', cacheName);
         return caches.delete(cacheName);
       }
-
-      return caches.delete(cacheName);
     }),
   )),
 ));
