@@ -191,6 +191,13 @@ class DBHelper {
   }
 
   /**
+   * Favorite image url.
+   */
+  static imageUrlForFavorite(isFavorite) {
+    const name = isFavorite ? 'favoriteActive' : 'favorite';
+    return `/img/${name}.svg`;
+  }
+  /**
    * Map marker for a restaurant.
    */
   static mapMarkerForRestaurant(restaurant, map) {

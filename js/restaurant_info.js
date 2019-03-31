@@ -75,12 +75,35 @@ fetchRestaurantFromURL = (callback) => {
   }
 };
 
+const toogleFavorite = (restaurantId, is_favorite) => {
+  fetch(`${DBHelper.RESTAURANT_DATABASE_URL}/${restaurantId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ is_favorite: !is_favorite }),
+  }).then(() => {
+    window.location.reload();
+  }).catch((error) => {
+    console.log('Error while toogling favorite');
+    console.error(error);
+  });
+};
+
 /**
  * Create restaurant HTML and add it to the webpage
  */
 fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
+
+  const favoriteIcon = document.getElementById('restaurant-favorite');
+  favoriteIcon.classList.add('lazy');
+  favoriteIcon.setAttribute('data-src', DBHelper.imageUrlForFavorite(restaurant.is_favorite));
+  favoriteIcon.alt = restaurant.is_favorite ? 'Restaurant is you favorite' : 'Restaurant is not your favorite';
+  const toogleFavoriteElement = document.getElementById('toogle-restaurant-favorite');
+  toogleFavoriteElement.addEventListener('click', (event) => {
+    event.preventDefault();
+    toogleFavorite(restaurant.id, restaurant.is_favorite);
+  });
+  toogleFavoriteElement.setAttribute('aria-label', restaurant.is_favorite ? 'Remove from favorite' : 'Add to favorite');
 
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
